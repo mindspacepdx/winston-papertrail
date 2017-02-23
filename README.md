@@ -33,13 +33,17 @@ There are a few required options for logging to Papertrail:
   //
   require('winston-papertrail').Papertrail;
 
+  var winstonPapertrail = new winston.transports.Papertrail({
+	host: 'logs.papertrailapp.com',
+	port: 12345
+  })
+  
+  winstonPapertrail.on('error', function(err) {
+	// Handle, report, or silently ignore connection errors and failures
+  });
+
   var logger = new winston.Logger({
-  	transports: [
-  		new winston.transports.Papertrail({
-  			host: 'logs.papertrailapp.com',
-  			port: 12345
-  		});
-  	]
+	transports: [winstonPapertrail]
   });
 
   logger.info('this is my message');
@@ -49,13 +53,15 @@ There are a number of optional settings:
 
 - `disableTls` - set to `true` to disable TLS on your transport. Defaults to `false`
 - `level` - The log level to use for this transport, defaults to `info`
+- `levels` - A custom mapping of log levels strings to severity levels, defaults to the mapping of `npm` levels to RFC5424 severities
 - `hostname` - The hostname for your transport, defaults to `os.hostname()`
 - `program` - The program for your transport, defaults to `default`
 - `facility` - The syslog facility for this transport, defaults to `daemon`
 - `logFormat` - A function to format your log message before sending, see below
-- `colorize` - Enable colors in Papertrail, defaults to `false`
+- `colorize` - Enable colors in logs, defaults to `false`
 - `inlineMeta` - Inline multi-line messages, defaults to `false`
 - `handleExceptions` - Tell this Transport to handle exceptions, defaults to `false`
+- `flushOnClose` - Flush any queued logs prior to closing/exiting
 
 There are also a number of settings for connection failure and retry behavior
 
@@ -188,6 +194,6 @@ pt.on('connect', function () {
 });
 ```
 
-#### Author: [Ken Perkins](http://blog.clipboard.com)
+#### Author: [Ken Perkins](https://twitter.com/kenperkins)
 
 [0]: https://github.com/flatiron/winston
